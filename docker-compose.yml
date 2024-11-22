@@ -42,12 +42,11 @@ services:
   # The default MySQL installation only creates the "root" administrative account
   # create new users using docker-compose exec
     environment:
-        MYSQL_ROOT_PASSWORD: ""
         MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
-        MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        MYSQL_ROOT_PASSWORD: ""
         MYSQL_DATABASE: "${DB_NAME}"
         MYSQL_USER: "${DB_USERNAME}"
-        MYSQL_PASSWORD: "${DB_PASSWORD}"
+        MYSQL_PASSWORD: ""
         container_name: mysql
   phpmyadmin:
     depends_on:
