@@ -1,5 +1,6 @@
 services:
   php:
+    restart: always
     build: 
       context: './php/'
       args:
@@ -12,6 +13,7 @@ services:
     links:
      - mysql
   apache:
+    restart: always
     build:
       context: './apache/'
       args:
@@ -36,7 +38,7 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - data:/var/lib/mysql
+      - ${PROJECT_PWD}/mysql_data:/var/lib/mysql
     networks:
       - backend
   # The default MySQL installation only creates the "root" administrative account
