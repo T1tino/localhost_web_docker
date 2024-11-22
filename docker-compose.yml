@@ -30,8 +30,8 @@ services:
       - ${PROJECT_ROOT}/:/var/www/html/
     container_name: apache
   mysql:
-    image: mysql:${MYSQL_VERSION}
-    command: --mysql-native-password=ON --pid-file /var/lib/mysql/mysqld.pid
+    image: mariadb:${MYSQL_VERSION}
+    command: --pid-file /var/lib/mysql/mysqld.pid
     restart: always
     ports:
       - "3306:3306"
@@ -42,14 +42,14 @@ services:
   # The default MySQL installation only creates the "root" administrative account
   # create new users using docker-compose exec
     environment:
-      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
-      MYSQL_DATABASE: "${DB_NAME}"
-      MYSQL_USER: "${DB_USERNAME}"
-      MYSQL_PASSWORD: "${DB_PASSWORD}"
-    container_name: mysql
+        MYSQL_ROOT_PASSWORD: ""
+        MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+        MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        MYSQL_DATABASE: "${DB_NAME}"
+        MYSQL_USER: "${DB_USERNAME}"
+        MYSQL_PASSWORD: "${DB_PASSWORD}"
+        container_name: mysql
   phpmyadmin:
-  #  build:    
-  #   context: './phpmyadmin/'
     depends_on:
       - mysql
     links:
