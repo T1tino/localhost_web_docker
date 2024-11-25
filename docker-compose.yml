@@ -1,23 +1,25 @@
 services:
   php:
     restart: always
-    build: 
-      context: './php/'
+    build:
+      context: 'php/'
       args:
-       PHP_VERSION: ${PHP_VERSION}
+        PHP_VERSION: ${PHP_VERSION}
     networks:
       - backend
     volumes:
       - ${PROJECT_ROOT}/:/var/www/html/
     container_name: php
     links:
-     - mysql
+      - mysql
   apache:
     restart: always
     build:
-      context: './apache/'
+      context: 'apache/'
       args:
-       APACHE_VERSION: ${APACHE_VERSION}
+        APACHE_VERSION: ${APACHE_VERSION}
+    environment:
+      - SERVER_NAME=localhost
     depends_on:
       - php
       - mysql
@@ -32,6 +34,7 @@ services:
       - ${PROJECT_ROOT}/:/var/www/html/
     container_name: apache
   mysql:
+    container_name: "mysql"  
     image: mariadb:${MYSQL_VERSION}
     command: --pid-file /var/lib/mysql/mysqld.pid
     restart: always
@@ -41,15 +44,14 @@ services:
       - ${PROJECT_PWD}/mysql_data:/var/lib/mysql
     networks:
       - backend
-  # The default MySQL installation only creates the "root" administrative account
-  # create new users using docker-compose exec
+    # The default MySQL installation only creates the "root" administrative account
+    # create new users using docker-compose exec
     environment:
-        MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
-        MYSQL_ROOT_PASSWORD: ""
-        MYSQL_DATABASE: "${DB_NAME}"
-        MYSQL_USER: "${DB_USERNAME}"
-        MYSQL_PASSWORD: ""
-        container_name: mysql
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: ""
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: ""
   phpmyadmin:
     depends_on:
       - mysql
@@ -57,7 +59,7 @@ services:
       - mysql
     image: phpmyadmin/phpmyadmin
     restart: always
-    hostname: localhost    
+    hostname: localhost
     ports:
       - '8081:80'
     environment:
@@ -73,4 +75,4 @@ networks:
   frontend:
   backend:
 volumes:
-    data:
+  data:
