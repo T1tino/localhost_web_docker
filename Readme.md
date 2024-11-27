@@ -30,5 +30,4 @@ docker ps
 
 ## For more information 
 [visit this post](https://ayoubb.com/technology/dockerize-apache-mysql-php-stack/)
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
+
