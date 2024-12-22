@@ -1,78 +1,51 @@
 services:
   php:
-    restart: always
     build:
-      context: 'php/'
+      context: 'php-apache/'
       args:
         PHP_VERSION: ${PHP_VERSION}
-    networks:
-      - backend
-    volumes:
-      - ${PROJECT_ROOT}/:/var/www/html/
-    container_name: php
-    links:
-      - mysql
-  apache:
+    container_name: php-apache
     restart: always
-    build:
-      context: 'apache/'
-      args:
-        APACHE_VERSION: ${APACHE_VERSION}
     environment:
-      - SERVER_NAME=localhost
-    depends_on:
-      - php
-      - mysql
-    links:
-      - mysql
-    networks:
-      - frontend
-      - backend
+      SERVER_NAME: localhost
     ports:
       - "8080:80"
     volumes:
-      - ${PROJECT_ROOT}/:/var/www/html/
-    container_name: apache
+      - ${PROJECT_ROOT}:/var/www/html
+    depends_on:
+      - mysql
+    networks:
+      - localhost
   mysql:
-    container_name: "mysql"  
-    image: mariadb:${MYSQL_VERSION}
-    command: --pid-file /var/lib/mysql/mysqld.pid
+    image: ${MYSQL_VERSION}
+    container_name: mysql
     restart: always
+    command: --pid-file /var/lib/mysql/mysqld.pid --lower_case_table_names=1
+    environment:
+      MYSQL_ROOT_HOST: '%'
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
+      MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+      MYSQL_DATABASE: "${DB_NAME}"
+      MYSQL_USER: "${DB_USERNAME}"
+      MYSQL_PASSWORD: "${DB_PASSWORD}"
     ports:
       - "3306:3306"
     volumes:
       - ${PROJECT_PWD}/mysql_data:/var/lib/mysql
     networks:
-      - backend
-    # The default MySQL installation only creates the "root" administrative account
-    # create new users using docker-compose exec
-    environment:
-      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: "yes"
-      MYSQL_ROOT_PASSWORD: ""
-      MYSQL_DATABASE: "${DB_NAME}"
-      MYSQL_USER: "${DB_USERNAME}"
-      MYSQL_PASSWORD: ""
+      - localhost
   phpmyadmin:
-    depends_on:
-      - mysql
-    links:
-      - mysql
     image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
     restart: always
-    hostname: localhost
-    ports:
-      - '8081:80'
     environment:
       PMA_HOST: mysql
-      MYSQL_USERNAME: "${DB_USERNAME}"
       MYSQL_ROOT_PASSWORD: "${DB_ROOT_PASSWORD}"
+    ports:
+      - "8081:80"
+    depends_on:
+      - mysql
     networks:
-      - backend
-    volumes:
-      - /sessions
-    container_name: phpmyadmin
+      - localhost
 networks:
-  frontend:
-  backend:
-volumes:
-  data:
+  localhost:

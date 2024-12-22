@@ -4,6 +4,9 @@ set -e  # Detener el script en caso de errores
 echo "=== Actualizando la lista de paquetes ==="
 sudo apt update
 
+echo "=== confirmando que curl este instalado ==="
+curl --version
+
 echo "=== Instalando Docker ==="
 sudo apt install docker.io -y
 
@@ -14,7 +17,7 @@ echo "=== Verificando la versión de Docker instalada ==="
 docker --version
 
 echo "=== Configurando Docker Compose ==="
-DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
+export DOCKER_CONFIG=${DOCKER_CONFIG:-$HOME/.docker}
 mkdir -p $DOCKER_CONFIG/cli-plugins
 echo "=== Descargando Docker Compose Plugin ==="
 curl -SL https://github.com/docker/compose/releases/download/v2.30.3/docker-compose-linux-x86_64 -o $DOCKER_CONFIG/cli-plugins/docker-compose
