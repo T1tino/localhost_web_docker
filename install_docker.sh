@@ -37,6 +37,9 @@ newgrp docker
 echo "=== Reiniciando el servicio Docker ==="
 sudo service docker restart
 
+echo "=== Instalamos docker buildx necesario en algunos docker's ==="
+sudo apt install docker-buildx
+
 echo "=== Verificando el estado de Docker con 'docker ps' ==="
 docker ps
 
